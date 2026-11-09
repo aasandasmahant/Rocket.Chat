@@ -111,9 +111,15 @@ Do not introduce a second database or a new backend framework unless a concrete 
 - All ads and affiliate placements are clearly disclosed and do not disrupt core messaging.
 - All external data shown to users has source attribution and freshness handling.
 
-## Current status
+## Current status (2026-11-09)
 
-- Dedicated branch created from `develop`: `yaschat/phase-1-foundation`.
-- This document is the initial project baseline.
-- No application source files have been changed yet.
-- Repository audit and baseline validation are the next engineering tasks.
+- Dedicated branch: `yaschat/phase-1-foundation`; upstream `develop` remains separate.
+- 14 YasChat commits are expected after the latest stage-14 audit; verify the branch head before relying on this count.
+- Initial audit documents cover repository structure, authentication, client UI/localization, core messaging, direct messages/search/notifications/calls, reactions, registration, branding assets, architecture boundaries, initial license/PEM review, existing translation reuse, and product/affiliate/ads gaps.
+- Stage 11 repository inventory and manifest-based test-command discovery are recorded. The repository has a large Yarn 4 monorepo structure; build/test commands are documented, but no install/build/lint/typecheck/unit/API/E2E command has been executed by this audit workflow.
+- Existing message auto-translation was found in the upstream source, including Google, DeepL, LibreTranslate and Microsoft provider adapters, permission checks, per-room settings, client controls and E2E-room restrictions. YasChat should reuse it rather than add a duplicate engine.
+- Existing application banners are announcement/dismissal functionality, not an ad network. No affiliate/commission/ClickBank/ShareASale implementation was found in the path scan. Product commerce and ad-serving therefore require new isolated modules.
+- Initial root/Enterprise license boundary and PEM path/header classification were inspected. Full third-party dependency license inventory, history-aware secrets scan and legal review remain open.
+- **No application source files have been changed and no production-ready YasChat features are claimed.** The commits so far are audit/plan documents only.
+- Next engineering gate: establish a clean baseline in a compatible checkout (Node version accepted by the root engines and Yarn 4.18.1), run immutable install, then focused lint/typecheck/build/tests. Only after a passing baseline should the first application-code slice be implemented.
+- Do not merge the YasChat branch into `develop` until source changes, license checks, tests and human review pass.
