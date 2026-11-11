@@ -105,23 +105,23 @@ const YasChatHomePage = () => (
 	<Page color='default' background='tint'>
 		<PageScrollableContent>
 			<Box className={homeStyles}>
-				<Box className='yaschat-hero'>
+				<Box className='yaschat-hero' role='region' aria-label='YasChat introduction'>
 					<Box className='yaschat-eyebrow'>YASCHAT · DISCOVER · DISCUSS · DECIDE</Box>
 					<Box is='h1'>What do you want to know or share?</Box>
 					<Box is='p'>Explore products, learn from real experiences and join conversations that help you make informed decisions.</Box>
 				</Box>
-				<Box is='h2' className='yaschat-section-title'>Explore YasChat</Box>
-				<Box className='yaschat-grid'>
+				<Box is='h2' id='yaschat-explore-title' className='yaschat-section-title'>Explore YasChat</Box>
+				<Box className='yaschat-grid' role='list' aria-labelledby='yaschat-explore-title'>
 					{features.map((feature) => (
-						<Box key={feature.title} className='yaschat-feature'>
+						<Box key={feature.title} className='yaschat-feature' role='listitem'>
 							<Box className='yaschat-feature-mark' aria-hidden='true'>{feature.mark}</Box>
 							<Box is='h3'>{feature.title}</Box>
 							<Box is='p'>{feature.description}</Box>
 						</Box>
 					))}
 				</Box>
-				<Box is='h2' className='yaschat-section-title'>Your community feed</Box>
-				<Box className='yaschat-feed-placeholder'>
+				<Box is='h2' id='yaschat-feed-title' className='yaschat-section-title'>Your community feed</Box>
+				<Box className='yaschat-feed-placeholder' role='region' aria-labelledby='yaschat-feed-title'>
 					The feed will show posts from For You, Following, Worldwide and Questions. Community posts and translated content will be connected in a later stage. No sample posts or fabricated activity are shown here.
 				</Box>
 			</Box>
