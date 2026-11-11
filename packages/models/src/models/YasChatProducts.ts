@@ -1,5 +1,10 @@
-import type { IYasChatProductsModel, YasChatApprovedProductView, YasChatProductDocument, YasChatProductsSearchOptions } from '@rocket.chat/model-typings';
-import type { YasChatProductModerationStatus } from '@rocket.chat/core-typings';
+import type {
+	IYasChatProductsModel,
+	YasChatApprovedProductView,
+	YasChatProductDocument,
+	YasChatProductsSearchOptions,
+} from '@rocket.chat/model-typings';
+import type { YasChatProductAdminAuditEvent, YasChatProductModerationStatus } from '@rocket.chat/core-typings';
 import { escapeRegExp } from '@rocket.chat/tools';
 import type { Db, Filter, FindCursor, IndexDescription } from 'mongodb';
 
@@ -63,5 +68,41 @@ export class YasChatProductsRaw extends BaseRaw<YasChatProductDocument> implemen
 	findByModerationStatus(status: YasChatProductModerationStatus, limit = 50): FindCursor<YasChatProductDocument> {
 		const safeLimit = Number.isInteger(limit) ? Math.min(Math.max(limit, 1), 100) : 50;
 		return this.find({ 'moderation.status': status }, { sort: { updatedAt: -1 }, limit: safeLimit });
+	}
+
+	async reviewPendingProduct(
+		recordId: string,
+		expectedVersion: number,
+		actorId: string,
+		decision: 'approved' | 'rejected',
+		occurredAt: string,
+		reason?: string,
+	): Promise<boolean> {
+		const event: YasChatProductAdminAuditEvent = {
+			recordId,
+			actorId,
+			action: decision,
+			occurredAt,
+			changedFields: ['moderation.status', 'moderation.reviewedBy', 'moderation.reviewedAt', ...(decision === 'rejected' ? ['moderation.rejectionReason'] : [])],
+			...(decision === 'rejected' && reason ? { reason } : {}),
+		};
+
+		const result = await this.updateOne(
+			{ recordId, version: expectedVersion, 'moderation.status': 'pending-review' },
+			{
+				$set: {
+					moderation: {
+						status: decision,
+						reviewedBy: actorId,
+						reviewedAt: occurredAt,
+						...(decision === 'rejected' && reason ? { rejectionReason: reason } : {}),
+					},
+				},
+				$inc: { version: 1 },
+				$push: { moderationHistory: event },
+			},
+		);
+
+		return result.modifiedCount === 1;
 	}
 }
