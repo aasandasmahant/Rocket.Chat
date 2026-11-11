@@ -11,6 +11,7 @@ on:
       - "README.md"
       - "apps/**"
       - "packages/**"
+      - "packages/core-typings/src/yaschat-commerce/**"
       - "package.json"
       - "yarn.lock"
   workflow_dispatch:
