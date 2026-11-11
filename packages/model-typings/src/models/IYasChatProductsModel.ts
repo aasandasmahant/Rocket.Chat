@@ -1,4 +1,5 @@
-import type { YasChatProductAdminRecord } from '@rocket.chat/core-typings';
+import type { YasChatProductAdminRecord, YasChatProductModerationStatus } from '@rocket.chat/core-typings';
+import type { FindCursor } from 'mongodb';
 
 import type { IBaseModel } from './IBaseModel';
 
@@ -13,4 +14,21 @@ export type YasChatProductDocument = YasChatProductAdminRecord & {
 	_id: string;
 };
 
-export interface IYasChatProductsModel extends IBaseModel<YasChatProductDocument> {}
+export type YasChatApprovedProductView = Pick<YasChatProductDocument, '_id' | 'product' | 'createdAt' | 'updatedAt'>;
+
+export interface YasChatProductsSearchOptions {
+	search?: string;
+	category?: string;
+	limit?: number;
+	offset?: number;
+}
+
+export interface IYasChatProductsModel extends IBaseModel<YasChatProductDocument> {
+	/**
+	 * Public catalogue query. The approved-status constraint is enforced by the
+	 * model query itself; callers cannot override it through supplied filters.
+	 * Services should still apply endpoint-level rate limits and DTO validation.
+	 */
+	findApprovedProducts(options?: YasChatProductsSearchOptions): FindCursor<YasChatApprovedProductView>;
+	findByModerationStatus(status: YasChatProductModerationStatus, limit?: number): FindCursor<YasChatProductDocument>;
+}
