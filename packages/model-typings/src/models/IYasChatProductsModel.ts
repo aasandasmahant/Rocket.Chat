@@ -1,4 +1,8 @@
-import type { YasChatProductAdminRecord, YasChatProductModerationStatus } from '@rocket.chat/core-typings';
+import type {
+	YasChatProductAdminAuditEvent,
+	YasChatProductAdminRecord,
+	YasChatProductModerationStatus,
+} from '@rocket.chat/core-typings';
 import type { FindCursor } from 'mongodb';
 
 import type { IBaseModel } from './IBaseModel';
@@ -12,6 +16,7 @@ import type { IBaseModel } from './IBaseModel';
  */
 export type YasChatProductDocument = YasChatProductAdminRecord & {
 	_id: string;
+	moderationHistory?: YasChatProductAdminAuditEvent[];
 };
 
 export type YasChatApprovedProductView = Pick<YasChatProductDocument, '_id' | 'product' | 'createdAt' | 'updatedAt'>;
@@ -31,4 +36,17 @@ export interface IYasChatProductsModel extends IBaseModel<YasChatProductDocument
 	 */
 	findApprovedProducts(options?: YasChatProductsSearchOptions): FindCursor<YasChatApprovedProductView>;
 	findByModerationStatus(status: YasChatProductModerationStatus, limit?: number): FindCursor<YasChatProductDocument>;
+
+	/**
+	 * Atomically reviews a pending record and appends its audit event in the same
+	 * MongoDB update. The version predicate prevents stale concurrent reviews.
+	 */
+	reviewPendingProduct(
+		recordId: string,
+		expectedVersion: number,
+		actorId: string,
+		decision: 'approved' | 'rejected',
+		occurredAt: string,
+		reason?: string,
+	): Promise<boolean>;
 }
