@@ -108,6 +108,10 @@ declare module '@rocket.chat/ui-contexts' {
 			pathname: '/admin/ABAC';
 			pattern: '/admin/ABAC/:tab?/:context?/:id?';
 		};
+		'yaschat-admin-product-review': {
+			pathname: '/admin/yaschat/product-review';
+			pattern: '/admin/yaschat/product-review';
+		};
 		'admin-ai-center': {
 			pathname: `/admin/ai-center${`/${string}` | ''}`;
 			pattern: '/admin/ai-center/:section?';
@@ -254,4 +258,9 @@ registerAdminRoute('/feature-preview', {
 registerAdminRoute('/ABAC/:tab?/:context?/:id?', {
 	name: 'admin-ABAC',
 	component: lazy(() => import('./ABAC/AdminABACRoute')),
+});
+
+registerAdminRoute('/yaschat/product-review', {
+	name: 'yaschat-admin-product-review',
+	component: lazy(() => import('./yaschat/YasChatProductReviewRoute')),
 });
