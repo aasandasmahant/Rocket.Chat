@@ -1,3 +1,4 @@
+import { YasChatLogo } from '@rocket.chat/logo';
 import { Box } from '@rocket.chat/fuselage';
 import {
 	HorizontalWizardLayout,
@@ -24,7 +25,15 @@ const HorizontalTemplate = ({ children }: HorizontalTemplateProps) => {
 	return (
 		<HorizontalWizardLayout
 			background={customBackground}
-			logo={!hideLogo && customLogo ? <Box is='img' maxHeight='x40' marginInline='neg-x8' src={customLogo} alt='Logo' /> : <></>}
+			logo={
+				hideLogo ? (
+					<></>
+				) : customLogo ? (
+					<Box is='img' maxHeight='x40' marginInline='neg-x8' src={customLogo} alt='Logo' />
+				) : (
+					<YasChatLogo />
+				)
+			}
 		>
 			<HorizontalWizardLayoutAside>
 				<HorizontalWizardLayoutTitle>
