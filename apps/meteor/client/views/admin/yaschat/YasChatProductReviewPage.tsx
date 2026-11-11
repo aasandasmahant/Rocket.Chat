@@ -1,4 +1,4 @@
-import { Box, Button, Margins } from '@rocket.chat/fuselage';
+import { Box, Button } from '@rocket.chat/fuselage';
 import { Page, PageContent, PageHeader } from '@rocket.chat/ui-client';
 import { css } from '@rocket.chat/css-in-js';
 import { useEffect, useState } from 'react';
