@@ -1,7 +1,7 @@
 import { usePermission } from '@rocket.chat/ui-contexts';
 
 import YasChatProductReviewPage from './YasChatProductReviewPage';
-import NotAuthorizedPage from '../../../notAuthorized/NotAuthorizedPage';
+import NotAuthorizedPage from '../../notAuthorized/NotAuthorizedPage';
 
 const YasChatProductReviewRoute = () => {
 	const canReviewProducts = usePermission('access-permissions');
