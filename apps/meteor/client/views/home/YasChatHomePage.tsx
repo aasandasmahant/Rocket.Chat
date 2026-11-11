@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { FormEvent } from 'react';
 import { Box } from '@rocket.chat/fuselage';
 import { Page, PageScrollableContent } from '@rocket.chat/ui-client';
 import { css } from '@rocket.chat/css-in-js';
@@ -9,6 +10,10 @@ type YasChatProduct = {
 		title?: string;
 		description?: string;
 		category?: string;
+		imageUrl?: string;
+		productUrl: string;
+		price?: { amount: number; currency: string };
+		source: 'clickbank' | 'shareasale';
 	};
 };
 
@@ -38,6 +43,9 @@ const homeStyles = css`
 	.yaschat-products { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 	.yaschat-product { min-width: 0; padding: 18px; border: 1px solid var(--rcx-color-stroke-extra-light, #e5e7eb); border-radius: 14px; background: var(--rcx-color-surface, #fff); }
 	.yaschat-product h3 { margin: 0 0 8px; font-size: 16px; overflow-wrap: anywhere; }
+	.yaschat-product img { display: block; width: 100%; height: 150px; margin-bottom: 12px; border-radius: 10px; object-fit: contain; background: var(--rcx-color-surface-tint, #f5f6fa); }
+	.yaschat-product a { color: #3949ab; font-weight: 600; text-decoration: none; }
+	.yaschat-product a:hover { text-decoration: underline; }
 	.yaschat-product p { margin: 0 0 10px; color: var(--rcx-color-foreground-secondary, #687080); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
 	.yaschat-category { display: inline-block; margin-bottom: 8px; padding: 4px 8px; border-radius: 999px; background: #eef0ff; color: #3949ab; font-size: 11px; }
 	.yaschat-state { padding: 18px; border: 1px solid var(--rcx-color-stroke-extra-light, #e5e7eb); border-radius: 12px; background: var(--rcx-color-surface, #fff); line-height: 1.6; }
@@ -102,7 +110,7 @@ const YasChatHomePage = () => {
 		return () => controller.abort();
 	}, [activeSearch, page]);
 
-	const submitSearch = (event: React.FormEvent<HTMLFormElement>): void => {
+	const submitSearch = (event: FormEvent<HTMLFormElement>): void => {
 		event.preventDefault();
 		setPage(0);
 		setActiveSearch(searchInput.trim().slice(0, 120));
@@ -142,9 +150,13 @@ const YasChatHomePage = () => {
 						<Box className='yaschat-products' role='list' aria-label='Approved products'>
 							{products.map((item) => (
 								<Box key={item._id} className='yaschat-product' role='listitem'>
+									{item.product.imageUrl && <img src={item.product.imageUrl} alt={item.product.title || 'Product'} loading='lazy' />}
 									{item.product.category && <Box className='yaschat-category'>{item.product.category}</Box>}
 									<Box is='h3'>{item.product.title || 'Untitled product'}</Box>
 									{item.product.description && <Box is='p'>{item.product.description}</Box>}
+									{item.product.price && <Box is='p'>{new Intl.NumberFormat(undefined, { style: 'currency', currency: item.product.price.currency }).format(item.product.price.amount)}</Box>}
+									<Box is='p'>Partner: {item.product.source === 'clickbank' ? 'ClickBank' : 'ShareASale'}</Box>
+									<a href={item.product.productUrl} target='_blank' rel='noopener noreferrer'>View product</a>
 								</Box>
 							))}
 						</Box>
