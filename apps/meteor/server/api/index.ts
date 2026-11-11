@@ -26,6 +26,7 @@ import './v1/misc';
 import './v1/permissions';
 import './v1/presence';
 import './v1/push';
+import './v1/yaschat-products';
 import './v1/roles';
 import './v1/rooms';
 import './v1/settings';
