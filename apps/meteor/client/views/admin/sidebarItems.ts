@@ -28,6 +28,13 @@ export const {
 		permissionGranted: (): boolean => hasPermission('view-engagement-dashboard'),
 	},
 	{
+		href: '/admin/yaschat/product-review',
+		i18nLabel: 'YasChat Product Review',
+		icon: 'shield-check',
+		tag: 'Beta',
+		permissionGranted: (): boolean => hasPermission('access-permissions'),
+	},
+	{
 		href: '/admin/moderation',
 		i18nLabel: 'Moderation',
 		icon: 'shield-alt',
