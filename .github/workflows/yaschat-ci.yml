@@ -8,6 +8,7 @@ on:
       - ".github/workflows/yaschat-ci.yml"
       - "scripts/**"
       - "docs/**"
+      - "README.md"
       - "apps/**"
       - "packages/**"
       - "package.json"
