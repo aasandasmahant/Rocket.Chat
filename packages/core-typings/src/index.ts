@@ -1,3 +1,5 @@
+export * from './yaschat-commerce';
+
 export * from './utils';
 
 export * from './Apps';
