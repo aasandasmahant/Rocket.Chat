@@ -21,7 +21,7 @@ The model query is a defence-in-depth data-access constraint, not a replacement 
 
 ## Verification
 
-- Source changes were committed to `yaschat/phase-1-foundation` and will be read back from GitHub.
+- Source changes were committed to `yaschat/phase-1-foundation` and were read back from GitHub and the approved-only filter, response projection, and bounded pagination were confirmed in the committed source.
 - Build, TypeScript typecheck, lint, automated tests, MongoDB integration tests, and browser tests have **not** been run in this stage. No passing CI result is claimed.
 - No ClickBank or ShareASale credentials were added. No product records or fabricated catalogue data were inserted.
 
