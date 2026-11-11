@@ -1,0 +1,59 @@
+name: YasChat engineering gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_full_build:
+        description: Run the full monorepo build after lint and unit tests
+        required: true
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: yaschat-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-gates:
+    if: github.ref == 'refs/heads/yaschat/phase-1-foundation'
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Checkout YasChat branch
+        uses: actions/checkout@v4
+        with:
+          ref: yaschat/phase-1-foundation
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.15.0
+          cache: yarn
+
+      - name: Enable pinned Yarn
+        run: corepack enable
+
+      - name: Verify toolchain
+        run: |
+          node --version
+          yarn --version
+          test "$(yarn --version)" = "4.18.1"
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Check documentation links
+        run: yarn docs:check-links
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Unit tests
+        run: yarn testunit
+
+      - name: Full monorepo build
+        if: inputs.run_full_build
+        run: yarn build
