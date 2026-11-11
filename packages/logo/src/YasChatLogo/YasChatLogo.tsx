@@ -10,7 +10,8 @@ const YasChatLogo = () => {
 			xmlns='http://www.w3.org/2000/svg'
 			viewBox='0 0 640 160'
 			role='img'
-			aria-labelledby={`${titleId} ${descriptionId}`}
+			aria-labelledby={titleId}
+			aria-describedby={descriptionId}
 			width='100%'
 			height='100%'
 		>
