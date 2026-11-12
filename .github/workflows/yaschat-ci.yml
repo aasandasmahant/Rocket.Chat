@@ -61,6 +61,9 @@ jobs:
       - name: Check documentation links
         run: yarn docs:check-links
 
+      - name: YasChat moderation permission regression test
+        run: yarn workspace @rocket.chat/meteor testunit:yaschat-permissions
+
       - name: Lint
         run: yarn lint
 
