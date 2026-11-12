@@ -50,7 +50,7 @@ describe('[YasChat product moderation API authorization]', () => {
 
 		it('allows the administrator with the default moderation permission', async () => {
 			await request
-				.get(api('yaschat.admin.products.history'))
+				.get('/api/v1/yaschat.admin.products.history')
 				.set(credentials)
 				.query({ recordId })
 				.expect('Content-Type', 'application/json')
