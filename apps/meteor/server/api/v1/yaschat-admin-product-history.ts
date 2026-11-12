@@ -26,7 +26,7 @@ const productHistoryResponseSchema = ajv.compile<{ history: unknown[] }>({
 
 /**
  * Read-only product moderation audit history.
- * Access is restricted to authenticated administrators with product-review permission.
+ * Access is restricted to authenticated users granted the dedicated YasChat product-moderation permission.
  */
 API.v1.get(
 	'yaschat.admin.products.history',
