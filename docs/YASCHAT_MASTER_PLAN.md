@@ -140,10 +140,10 @@ Do not introduce a second database or a new backend framework unless a concrete 
 - Affiliate provider live-data sync, referral attribution/payouts, ad serving/campaign management, message translation validation, full localization coverage, and deployment operations remain future work.
 - Do not claim the whole YasChat product is complete or production-ready until these items and their tests are delivered.
 
-## Next engineering stage
+## Current next engineering stage
 
-**Stage 56 — YasChat chat and product-card integration design/implementation.**
+**Stage 57 — Native composer product picker and typed message attachment contract.**
 
-First map the existing Rocket.Chat message composer, message attachment/block rendering, room navigation and realtime APIs. Then implement product recommendation cards through the supported message extension point, with safe URL handling, affiliate disclosure, source attribution and permission checks. Keep the normal chat transport and existing messaging features intact.
+Stage 56 mapped the existing Rocket.Chat composer, message list, attachment renderer and authenticated `chat.postMessage` endpoint, then added a user-initiated catalogue-to-chat copy bridge. The next increment must add a room-context product picker and a typed product attachment sent through the native authenticated message path. It must preserve room permissions, E2EE restrictions, threads, federation and normal message behaviour.
 
 Do not merge this branch into `develop` until the required tests, build, license checks and human review pass.
