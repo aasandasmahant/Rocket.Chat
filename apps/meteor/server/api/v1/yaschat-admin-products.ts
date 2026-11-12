@@ -28,9 +28,9 @@ const adminProductQueueResponseSchema = ajv.compile<{ products: unknown[] }>({
 });
 
 /**
- * Read-only moderation queue. Mutating actions are deliberately not exposed
- * until their atomic state transition and append-only audit persistence are
- * implemented together.
+ * Read-only moderation queue. Queue access is restricted by the dedicated
+ * YasChat product-moderation permission; review mutations are handled by the
+ * separately protected atomic approve/reject endpoints.
  */
 API.v1.get(
 	'yaschat.admin.products',
