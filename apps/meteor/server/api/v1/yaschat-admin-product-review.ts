@@ -29,7 +29,7 @@ const rejectBodySchema = ajv.compile<ProductReviewBody>({
 	properties: {
 		recordId: { type: 'string', minLength: 1, maxLength: 160 },
 		expectedVersion: { type: 'integer', minimum: 1 },
-		reason: { type: 'string', minLength: 1, maxLength: 1000 },
+		reason: { type: 'string', minLength: 1, maxLength: 1000, pattern: '\\S' },
 	},
 	required: ['recordId', 'expectedVersion', 'reason'],
 	additionalProperties: false,
