@@ -1,8 +1,9 @@
+import { css } from '@rocket.chat/css-in-js';
 import { Box } from '@rocket.chat/fuselage';
 import { MessageComposerAction } from '@rocket.chat/ui-composer';
-import type { ComposerAPI } from '../../../../lib/chats/ChatAPI';
 import { useEffect, useState } from 'react';
-import { css } from '@rocket.chat/css-in-js';
+
+import type { ComposerAPI } from '../../../../lib/chats/ChatAPI';
 
 type YasChatProduct = {
 	_id: string;
@@ -23,7 +24,7 @@ type CatalogueResponse = {
 
 const pickerStyles = css`
 	.yaschat-composer-product-picker { position: relative; }
-	.yaschat-composer-product-list { position: absolute; z-index: 20; inset-block-end: calc(100% + 8px); inset-inline-start: 0; width: min( min(360px, calc(100vw - 32px)), 360px); max-height: 320px; overflow: auto; padding: 8px; border: 1px solid var(--rcx-color-stroke-extra-light, #d8dce5); border-radius: 12px; background: var(--rcx-color-surface, #fff); box-shadow: 0 8px 28px rgb(0 0 0 / 16%); }
+	.yaschat-composer-product-list { position: absolute; z-index: 20; inset-block-end: calc(100% + 8px); inset-inline-start: 0; width: min(360px, calc(100vw - 32px)); max-height: 320px; overflow: auto; padding: 8px; border: 1px solid var(--rcx-color-stroke-extra-light, #d8dce5); border-radius: 12px; background: var(--rcx-color-surface, #fff); box-shadow: 0 8px 28px rgb(0 0 0 / 16%); }
 	.yaschat-composer-product-option { display: block; width: 100%; padding: 10px; border: 0; border-radius: 8px; background: transparent; color: inherit; text-align: start; cursor: pointer; }
 	.yaschat-composer-product-option:hover, .yaschat-composer-product-option:focus-visible { background: var(--rcx-color-surface-tint, #f0f2fa); outline: none; }
 	.yaschat-composer-product-option strong, .yaschat-composer-product-option span { display: block; overflow-wrap: anywhere; }
@@ -37,7 +38,7 @@ const YasChatComposerProductPicker = ({ composer, disabled }: { composer?: Compo
 	const [error, setError] = useState(false);
 
 	useEffect(() => {
-		if (!open || products.length > 0 || loading) {
+		if (!open || products.length > 0) {
 			return;
 		}
 
@@ -71,7 +72,7 @@ const YasChatComposerProductPicker = ({ composer, disabled }: { composer?: Compo
 		};
 		void load();
 		return () => controller.abort();
-	}, [loading, open, products.length]);
+	}, [open, products.length]);
 
 	const insertProduct = (item: YasChatProduct): void => {
 		const product = item.product;
