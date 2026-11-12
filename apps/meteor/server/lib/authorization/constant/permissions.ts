@@ -3,6 +3,8 @@
 // then we can define edit-<type>-message instead of edit-message
 // 2. admin, moderator, and user roles should not be deleted as they are referenced in the code.
 export const permissions = [
+	// Product review access is intentionally admin-only by default; administrators may grant it to trusted moderator roles.
+	{ _id: 'yaschat-product-moderation', roles: ['admin'] },
 	{ _id: 'access-permissions', roles: ['admin'] },
 	{ _id: 'access-marketplace', roles: ['admin', 'user'] },
 	{ _id: 'access-setting-permissions', roles: ['admin'] },
