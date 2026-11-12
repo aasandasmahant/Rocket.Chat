@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import TaggedRocketChatLogo from './TaggedRocketChatLogo';
 
-it('renders the Rocket.Chat logo', () => {
+it('renders the YasChat brand through the tagged compatibility component', () => {
 	render(<TaggedRocketChatLogo />);
-	expect(screen.getByLabelText('Rocket.Chat')).toBeInstanceOf(SVGSVGElement);
+	expect(screen.getByRole('img', { name: 'YasChat' })).toBeInstanceOf(SVGSVGElement);
 });
