@@ -41,6 +41,7 @@ describe('YasChat moderation API authorization', () => {
 		const rejectSchema = source.slice(source.indexOf('const rejectBodySchema'), source.indexOf('const reviewResponseSchema'));
 
 		assert.match(rejectSchema, /reason:\s*\{\s*type:\s*'string',\s*minLength:\s*1/);
+		assert.match(rejectSchema, /reason:\s*\{[^}]*pattern:\s*'\\\\S'/);
 		assert.match(rejectSchema, /'recordId',\s*'expectedVersion',\s*'reason'/);
 	});
 });
