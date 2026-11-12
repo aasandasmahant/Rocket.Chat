@@ -2,13 +2,7 @@ import * as z from 'zod';
 
 import { YasChatProductSchema } from './IProduct';
 
-export const YasChatProductModerationStatusSchema = z.enum([
-	'draft',
-	'pending-review',
-	'approved',
-	'rejected',
-	'archived',
-]);
+export const YasChatProductModerationStatusSchema = z.enum(['draft', 'pending-review', 'approved', 'rejected', 'archived']);
 
 export const YasChatProductModerationSchema = z
 	.object({
