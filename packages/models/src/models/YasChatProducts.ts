@@ -96,6 +96,7 @@ export class YasChatProductsRaw extends BaseRaw<YasChatProductDocument> implemen
 			{ recordId, 'version': expectedVersion, 'moderation.status': 'pending-review' },
 			{
 				$set: {
+					updatedAt: occurredAt,
 					moderation: {
 						status: decision,
 						reviewedBy: actorId,
