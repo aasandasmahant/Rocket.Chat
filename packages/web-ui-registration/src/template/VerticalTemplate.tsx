@@ -1,6 +1,6 @@
-import { YasChatLogo } from '@rocket.chat/logo';
 import { Box } from '@rocket.chat/fuselage';
 import { VerticalWizardLayout, VerticalWizardLayoutTitle, VerticalWizardLayoutFooter } from '@rocket.chat/layout';
+import { YasChatLogo } from '@rocket.chat/logo';
 import { useSetting, useAssetWithDarkModePath } from '@rocket.chat/ui-contexts';
 import type { ReactNode } from 'react';
 
@@ -16,19 +16,16 @@ const VerticalTemplate = ({ children }: VerticalTemplateProps) => {
 	const customLogo = useAssetWithDarkModePath('logo');
 	const customBackground = useAssetWithDarkModePath('background');
 
+	let logo: ReactNode = <YasChatLogo />;
+	if (customLogo) {
+		logo = <Box is='img' maxHeight='x40' marginInline='neg-x8' src={customLogo} alt='Logo' />;
+	}
+	if (hideLogo) {
+		logo = null;
+	}
+
 	return (
-		<VerticalWizardLayout
-			background={customBackground}
-			logo={
-				hideLogo ? (
-					<></>
-				) : customLogo ? (
-					<Box is='img' maxHeight='x40' marginInline='neg-x8' src={customLogo} alt='Logo' />
-				) : (
-					<YasChatLogo />
-				)
-			}
-		>
+		<VerticalWizardLayout background={customBackground} logo={logo}>
 			<VerticalWizardLayoutTitle>
 				<RegisterTitle />
 			</VerticalWizardLayoutTitle>
