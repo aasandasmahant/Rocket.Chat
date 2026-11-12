@@ -4,7 +4,7 @@ import type { Credentials } from '@rocket.chat/api-client';
 import type { IUser } from '@rocket.chat/core-typings';
 import { expect } from 'chai';
 
-import { api, credentials, getCredentials, request } from '../../data/api-data';
+import { credentials, getCredentials, request } from '../../data/api-data';
 import { restorePermissionToRoles } from '../../data/permissions.helper';
 import { password } from '../../data/user';
 import { createUser, deleteUser, login } from '../../data/users.helper';
@@ -33,7 +33,7 @@ describe('[YasChat product moderation API authorization]', () => {
 
 	describe('yaschat.admin.products.history', () => {
 		it('rejects unauthenticated requests', async () => {
-			await request.get(api('yaschat.admin.products.history')).query({ recordId }).expect(401);
+			await request.get('/api/v1/yaschat.admin.products.history').query({ recordId }).expect(401);
 		});
 
 		it('rejects an authenticated user without the moderation permission', async () => {
@@ -68,7 +68,7 @@ describe('[YasChat product moderation API authorization]', () => {
 	] as const) {
 		describe(route, () => {
 			it('rejects unauthenticated requests', async () => {
-				await request.post(api(route)).send(body).expect(401);
+				await request.post(`/api/v1/${route}`).send(body).expect(401);
 			});
 
 			it('rejects an authenticated user without the moderation permission', async () => {
