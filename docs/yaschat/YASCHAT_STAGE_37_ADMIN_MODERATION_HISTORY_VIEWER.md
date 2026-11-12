@@ -15,20 +15,22 @@
 
 - `apps/meteor/client/views/admin/yaschat/YasChatProductReviewPage.tsx`
 
-## Source verification
+## Security status
 
-- The updated page was fetched again from `yaschat/phase-1-foundation`.
-- Verified the history type, state, endpoint request, view/hide control, empty state, accessible region, and balanced brace counts in the saved source.
-- The endpoint path matches the Stage 36 API route.
+- The Stage 36 history endpoint requires authentication and the dedicated `yaschat-product-moderation` permission.
+- The route guard, sidebar item, queue API, approve/reject APIs, and history API now use the same dedicated permission.
+- The permission is admin-only by default; trusted moderators require an explicit grant.
+- Administrator IDs are displayed as IDs. A display-name lookup remains optional follow-up work.
 
-## Not yet verified
+## Verification status
 
-- No TypeScript compile, ESLint, browser rendering, or live API integration test was run in this session.
-- The history endpoint currently uses the existing `access-permissions` permission gate; a dedicated YasChat moderation permission should be defined and assigned before production rollout.
-- Admin IDs are displayed as IDs; a user-name lookup can be added after confirming the supported user lookup pattern.
+- The page, route, and API endpoint were re-fetched from the target branch.
+- The endpoint path matches the registered Stage 36 API route.
+- No browser rendering or live API test result is claimed yet.
+- The current lint fixes have been committed; the fresh branch CI run must complete before this stage is called build-verified.
 
 ## Next engineering work
 
-- Add automated UI/API tests for history loading, empty history, forbidden access, and request failure.
-- Review and tighten the permission model to a dedicated product-moderation permission.
-- Run the repository CI quality gates and resolve any compile/lint/test failures.
+- Add automated UI tests for history loading, empty history, forbidden access, and request failure.
+- Run API integration tests and browser tests.
+- Continue with the product-card-in-chat and community feed integration after the moderation gates pass.
