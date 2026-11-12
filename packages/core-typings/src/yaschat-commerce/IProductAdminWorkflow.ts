@@ -16,11 +16,11 @@ export const YasChatProductModerationTransitionSchema = z
 	})
 	.superRefine((transition, context) => {
 		const allowed: Record<string, string[]> = {
-			draft: ['pending-review', 'archived'],
+			'draft': ['pending-review', 'archived'],
 			'pending-review': ['draft', 'approved', 'rejected'],
-			approved: ['archived'],
-			rejected: ['draft', 'archived'],
-			archived: ['draft'],
+			'approved': ['archived'],
+			'rejected': ['draft', 'archived'],
+			'archived': ['draft'],
 		};
 
 		if (!allowed[transition.from]?.includes(transition.to)) {
@@ -37,9 +37,8 @@ export const YasChatProductModerationTransitionSchema = z
 				message: 'Rejecting a product requires a reason',
 				path: ['reason'],
 			});
-			}
-		});
+		}
+	});
 
 export type YasChatProductModerationTransition = z.infer<typeof YasChatProductModerationTransitionSchema>;
-export const parseYasChatProductModerationTransition = (input: unknown) =>
-	YasChatProductModerationTransitionSchema.parse(input);
+export const parseYasChatProductModerationTransition = (input: unknown) => YasChatProductModerationTransitionSchema.parse(input);
