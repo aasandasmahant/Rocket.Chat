@@ -1,5 +1,11 @@
 import { YasChatProducts } from '@rocket.chat/models';
-import { ajv, ajvQuery, validateBadRequestErrorResponse, validateForbiddenErrorResponse, validateUnauthorizedErrorResponse } from '@rocket.chat/rest-typings';
+import {
+	ajv,
+	ajvQuery,
+	validateBadRequestErrorResponse,
+	validateForbiddenErrorResponse,
+	validateUnauthorizedErrorResponse,
+} from '@rocket.chat/rest-typings';
 
 import { API } from '../api';
 
