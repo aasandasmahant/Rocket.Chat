@@ -61,7 +61,7 @@ const YasChatProductReviewPage = () => {
 	const [reasons, setReasons] = useState<Record<string, string>>({});
 	const [notice, setNotice] = useState('');
 	const [historyById, setHistoryById] = useState<Record<string, ProductAuditEvent[]>>({});
-	const [historyLoadingId, setHistoryLoadingId] = useState('');
+	const [historyLoadingById, setHistoryLoadingById] = useState<Record<string, boolean>>({});
 	const [historyErrorById, setHistoryErrorById] = useState<Record<string, string>>({});
 	const [expandedHistoryId, setExpandedHistoryId] = useState('');
 
@@ -106,11 +106,11 @@ const YasChatProductReviewPage = () => {
 		}
 
 		setExpandedHistoryId(item.recordId);
-		if (Object.prototype.hasOwnProperty.call(historyById, item.recordId)) {
+		if (Object.prototype.hasOwnProperty.call(historyById, item.recordId) || historyLoadingById[item.recordId]) {
 			return;
 		}
 
-		setHistoryLoadingId(item.recordId);
+		setHistoryLoadingById((current) => ({ ...current, [item.recordId]: true }));
 		setHistoryErrorById((current) => {
 			const nextErrors = { ...current };
 			delete nextErrors[item.recordId];
@@ -135,7 +135,11 @@ const YasChatProductReviewPage = () => {
 				[item.recordId]: cause instanceof Error ? cause.message : 'The moderation history could not be loaded.',
 			}));
 		} finally {
-			setHistoryLoadingId('');
+			setHistoryLoadingById((current) => {
+				const next = { ...current };
+				delete next[item.recordId];
+				return next;
+			});
 		}
 	};
 
@@ -228,15 +232,15 @@ const YasChatProductReviewPage = () => {
 												<Box className='yaschat-review-actions'>
 													<Button primary onClick={() => void review(item, 'approve')} disabled={Boolean(busyId)} loading={busyId === item.recordId}>Approve</Button>
 							<Button danger onClick={() => void review(item, 'reject')} disabled={Boolean(busyId)} loading={busyId === item.recordId}>Reject</Button>
-												<Button onClick={() => void toggleHistory(item)} disabled={Boolean(busyId) || historyLoadingId === item.recordId}>
-													{historyLoadingId === item.recordId ? 'Loading history…' : expandedHistoryId === item.recordId ? 'Hide history' : 'View history'}
+												<Button onClick={() => void toggleHistory(item)} disabled={Boolean(busyId) || Boolean(historyLoadingById[item.recordId])}>
+													{historyLoadingById[item.recordId] ? 'Loading history…' : expandedHistoryId === item.recordId ? 'Hide history' : 'View history'}
 												</Button>
 											</Box>
 											{expandedHistoryId === item.recordId && (
 												<Box className='yaschat-review-history' role='region' aria-label={`Moderation history for ${item.product.title || item.recordId}`}>
 													<Box is='h4'>Moderation history</Box>
 													{historyErrorById[item.recordId] && <Box className='yaschat-review-error' role='alert'>{historyErrorById[item.recordId]}</Box>}
-													{historyLoadingId === item.recordId ? (
+													{historyLoadingById[item.recordId] ? (
 														<Box role='status'>Loading history…</Box>
 													) : historyById[item.recordId]?.length ? (
 														historyById[item.recordId].map((event, index) => (
