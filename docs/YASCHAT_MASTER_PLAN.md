@@ -77,6 +77,7 @@ Do not introduce a second database or a new backend framework unless a concrete 
 ### Phase 2 — Core chat experience
 - Validate sign-up, login, DMs, groups, channels, media, notifications, search, privacy, and moderation.
 - Fix only confirmed YasChat blockers; retain working upstream capabilities.
+- Add product recommendation cards to messages using a supported message/attachment extension point; do not fork the realtime messaging transport.
 
 ### Phase 3 — Translation
 - Add a provider-neutral translation interface.
@@ -111,16 +112,38 @@ Do not introduce a second database or a new backend framework unless a concrete 
 - All ads and affiliate placements are clearly disclosed and do not disrupt core messaging.
 - All external data shown to users has source attribution and freshness handling.
 
-## Current status (2026-11-09)
+## Current status (2026-11-12)
 
-- Dedicated branch: `yaschat/phase-1-foundation`; upstream `develop` remains separate.
-- 14 YasChat commits are expected after the latest stage-14 audit; verify the branch head before relying on this count.
-- Initial audit documents cover repository structure, authentication, client UI/localization, core messaging, direct messages/search/notifications/calls, reactions, registration, branding assets, architecture boundaries, initial license/PEM review, existing translation reuse, and product/affiliate/ads gaps.
-- Stage 11 repository inventory and manifest-based test-command discovery are recorded. The repository has a large Yarn 4 monorepo structure; build/test commands are documented, but no install/build/lint/typecheck/unit/API/E2E command has been executed by this audit workflow.
-- Existing message auto-translation was found in the upstream source, including Google, DeepL, LibreTranslate and Microsoft provider adapters, permission checks, per-room settings, client controls and E2E-room restrictions. YasChat should reuse it rather than add a duplicate engine.
-- Existing application banners are announcement/dismissal functionality, not an ad network. No affiliate/commission/ClickBank/ShareASale implementation was found in the path scan. Product commerce and ad-serving therefore require new isolated modules.
-- Initial root/Enterprise license boundary and PEM path/header classification were inspected. Full third-party dependency license inventory, history-aware secrets scan and legal review remain open.
-- First limited application change has now been made: three original YasChat SVG brand assets were added and the two PWA manifest files were updated. This is not a complete in-app rebrand; existing PNG fallback assets, favicon, Apple touch icon and visible React logo components still need replacement and testing.
-- **No server-side YasChat product/affiliate/ad feature has been implemented and no production-ready release is claimed.**
-- Next engineering gate: establish a clean baseline in a compatible checkout (Node version accepted by the root engines and Yarn 4.18.1), run immutable install, then focused lint/typecheck/build/tests. Only after a passing baseline should the first application-code slice be implemented.
-- Do not merge the YasChat branch into `develop` until source changes, license checks, tests and human review pass.
+### Repository and branch
+- Active repository: `aasandasmahant/Rocket.Chat`.
+- Active branch: `yaschat/phase-1-foundation`.
+- The YasChat branch is separate from `develop`; the upstream branch has not been modified by this work.
+- The branch contains the Stage 33–54 moderation, product catalogue, admin UI, permission, CI and timestamp work, plus YasChat branding assets.
+
+### Implemented and source-checked
+- Public approved-product catalogue API and responsive YasChat home catalogue page.
+- Dedicated admin product moderation permission, protected queue/history/approve/reject APIs, and route/sidebar guards.
+- Atomic optimistic-concurrency moderation decision with version increment, audit append, rejection reason validation, and `updatedAt` consistency.
+- Admin product review dashboard with on-demand history viewer.
+- Original jumping-fish logo, light/dark wordmarks, favicon, app icon, manifests and related branding integration.
+
+### Engineering gates
+- Historical push runs exposed lint errors in `packages/web-ui-registration` (Stage 33), `packages/core-typings` (Stage 34), and `packages/models` (admin-route-fix run).
+- The known Stage 33 and Stage 34 lint findings have been corrected in the active branch; the four Stage 73 model lint findings are also corrected in the current model source.
+- A fresh push-triggered YasChat engineering gate has been started after the lint repair commits. Its result must be checked before claiming CI is green.
+- The push workflow runs documentation links, focused moderation permission tests, lint and unit tests. The full monorepo build is conditional on the manual `workflow_dispatch` input `run_full_build=true`; a push-triggered green run alone does not prove the full build.
+- Typecheck, live API tests, browser/e2e tests, full monorepo build, deployment and production security review remain open.
+
+### Product UI status and next work
+- The current home page shows the product discovery catalogue and a community-feed placeholder.
+- Rocket.Chat's existing real-time messaging foundation remains available, but YasChat product recommendation cards inside chat, the dedicated community feed, and the full Chat • Share • Earn interaction layer are not yet integrated.
+- Affiliate provider live-data sync, referral attribution/payouts, ad serving/campaign management, message translation validation, full localization coverage, and deployment operations remain future work.
+- Do not claim the whole YasChat product is complete or production-ready until these items and their tests are delivered.
+
+## Next engineering stage
+
+**Stage 56 — YasChat chat and product-card integration design/implementation.**
+
+First map the existing Rocket.Chat message composer, message attachment/block rendering, room navigation and realtime APIs. Then implement product recommendation cards through the supported message extension point, with safe URL handling, affiliate disclosure, source attribution and permission checks. Keep the normal chat transport and existing messaging features intact.
+
+Do not merge this branch into `develop` until the required tests, build, license checks and human review pass.
