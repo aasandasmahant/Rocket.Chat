@@ -1,11 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import {
-	YasChatProductAdminAuditEventSchema,
-	YasChatProductAdminRecordSchema,
-	YasChatProductModerationSchema,
-} from './IProductAdmin';
+import { YasChatProductAdminAuditEventSchema, YasChatProductAdminRecordSchema, YasChatProductModerationSchema } from './IProductAdmin';
 
 const product = {
 	source: 'clickbank',
