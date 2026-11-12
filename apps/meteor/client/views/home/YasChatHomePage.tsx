@@ -131,7 +131,7 @@ const YasChatHomePage = () => {
 			if (!navigator.clipboard?.writeText) {
 				throw new Error('Clipboard access is unavailable');
 			}
-			await navigator.clipboard.writeText(lines.join('\\n\\n'));
+			await navigator.clipboard.writeText(lines.join('\n\n'));
 			setShareStatus((current) => ({ ...current, [item._id]: 'Copied. Open a chat and paste to share.' }));
 		} catch {
 			setShareStatus((current) => ({ ...current, [item._id]: 'Could not copy. Open the product and copy its link manually.' }));
