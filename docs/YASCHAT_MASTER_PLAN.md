@@ -142,8 +142,10 @@ Do not introduce a second database or a new backend framework unless a concrete 
 
 ## Current next engineering stage
 
-**Stage 57 — Native composer product picker and typed message attachment contract.**
+**Stage 61 — Recover the exact ui-contexts lint diagnostic and rerun the engineering gate.**
 
-Stage 56 mapped the existing Rocket.Chat composer, message list, attachment renderer and authenticated `chat.postMessage` endpoint, then added a user-initiated catalogue-to-chat copy bridge. The next increment must add a room-context product picker and a typed product attachment sent through the native authenticated message path. It must preserve room permissions, E2EE restrictions, threads, federation and normal message behaviour.
+Stage 60 rechecked the latest CI state and compared the native composer product picker with the public approved-catalogue route and canonical product schema. The catalogue response shape and fields inspected are aligned. Engineering Gate run #99 failed at `@rocket.chat/ui-contexts#lint`; the captured log excerpt does not expose the precise lint diagnostic, so no speculative source edits were made. Recover the command's exact output, fix only the verified issue, and obtain a fresh passing gate before claiming CI is green.
+
+The native composer picker remains a text-insertion bridge only. A typed product message attachment still requires a coordinated server-side validation/persistence contract, renderer, permissions/E2EE/federation review and tests.
 
 Do not merge this branch into `develop` until the required tests, build, license checks and human review pass.
