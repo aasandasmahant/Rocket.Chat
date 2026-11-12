@@ -25,10 +25,7 @@ test('rejects insecure product and affiliate URLs', () => {
 
 test('rejects unsupported sources and invalid price currencies', () => {
 	assert.equal(YasChatProductSchema.safeParse({ ...validProduct, source: 'unknown-network' }).success, false);
-	assert.equal(
-		YasChatProductSchema.safeParse({ ...validProduct, price: { amount: 12, currency: 'usd' } }).success,
-		false,
-	);
+	assert.equal(YasChatProductSchema.safeParse({ ...validProduct, price: { amount: 12, currency: 'usd' } }).success, false);
 });
 
 test('requires affiliate disclosure metadata', () => {
