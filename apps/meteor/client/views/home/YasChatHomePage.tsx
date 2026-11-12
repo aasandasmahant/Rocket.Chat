@@ -38,7 +38,9 @@ const homeStyles = css`
 	.yaschat-feature p { margin: 0; color: var(--rcx-color-foreground-secondary, #687080); font-size: 13px; line-height: 1.5; }
 	.yaschat-search { display: flex; gap: 8px; margin: 14px 0; }
 	.yaschat-search input { flex: 1; min-width: 0; padding: 12px 14px; border: 1px solid var(--rcx-color-stroke-extra-light, #cfd3dc); border-radius: 10px; background: var(--rcx-color-surface, #fff); color: inherit; font: inherit; }
-	.yaschat-search button, .yaschat-page-button { padding: 10px 16px; border: 0; border-radius: 10px; background: #3949ab; color: #fff; font: inherit; cursor: pointer; }
+	.yaschat-search button, .yaschat-page-button, .yaschat-share-button { padding: 10px 16px; border: 0; border-radius: 10px; background: #3949ab; color: #fff; font: inherit; cursor: pointer; }
+	.yaschat-share-button { margin-inline-end: 8px; background: var(--rcx-color-surface-tint, #eef0ff); color: var(--rcx-color-foreground, #273477); border: 1px solid var(--rcx-color-stroke-extra-light, #d9def5); }
+	.yaschat-share-status { margin-top: 8px; color: var(--rcx-color-foreground-secondary, #687080); font-size: 12px; }
 	.yaschat-search button:disabled, .yaschat-page-button:disabled { opacity: .45; cursor: not-allowed; }
 	.yaschat-products { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
 	.yaschat-product { min-width: 0; padding: 18px; border: 1px solid var(--rcx-color-stroke-extra-light, #e5e7eb); border-radius: 14px; background: var(--rcx-color-surface, #fff); }
@@ -69,6 +71,7 @@ const YasChatHomePage = () => {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [hasMore, setHasMore] = useState(false);
+	const [shareStatus, setShareStatus] = useState<Record<string, string>>({});
 
 	useEffect(() => {
 		const controller = new AbortController();
@@ -109,6 +112,31 @@ const YasChatHomePage = () => {
 		void loadProducts();
 		return () => controller.abort();
 	}, [activeSearch, page]);
+
+	const shareProductForChat = async (item: YasChatProduct): Promise<void> => {
+		const product = item.product;
+		const lines = [
+			`YasChat product: ${product.title || 'Untitled product'}`,
+			product.description,
+			product.category ? `Category: ${product.category}` : undefined,
+			product.price
+				? `Price: ${new Intl.NumberFormat(undefined, { style: 'currency', currency: product.price.currency }).format(product.price.amount)}`
+				: undefined,
+			`Catalogue partner: ${product.source === 'clickbank' ? 'ClickBank' : 'ShareASale'}`,
+			`Product link: ${product.productUrl}`,
+			'Shared from the YasChat product catalogue. Verify current price and details with the seller.',
+		].filter((line): line is string => Boolean(line));
+
+		try {
+			if (!navigator.clipboard?.writeText) {
+				throw new Error('Clipboard access is unavailable');
+			}
+			await navigator.clipboard.writeText(lines.join('\\n\\n'));
+			setShareStatus((current) => ({ ...current, [item._id]: 'Copied. Open a chat and paste to share.' }));
+		} catch {
+			setShareStatus((current) => ({ ...current, [item._id]: 'Could not copy. Open the product and copy its link manually.' }));
+		}
+	};
 
 	const submitSearch = (event: FormEvent<HTMLFormElement>): void => {
 		event.preventDefault();
@@ -156,7 +184,9 @@ const YasChatHomePage = () => {
 									{item.product.description && <Box is='p'>{item.product.description}</Box>}
 									{item.product.price && <Box is='p'>{new Intl.NumberFormat(undefined, { style: 'currency', currency: item.product.price.currency }).format(item.product.price.amount)}</Box>}
 									<Box is='p'>Partner: {item.product.source === 'clickbank' ? 'ClickBank' : 'ShareASale'}</Box>
+									<button className='yaschat-share-button' type='button' onClick={() => void shareProductForChat(item)}>Copy for chat</button>
 									<a href={item.product.productUrl} target='_blank' rel='noopener noreferrer'>View product</a>
+									{shareStatus[item._id] && <Box className='yaschat-share-status' role='status' aria-live='polite'>{shareStatus[item._id]}</Box>}
 								</Box>
 							))}
 						</Box>
