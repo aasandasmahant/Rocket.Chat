@@ -32,7 +32,7 @@ API.v1.get(
 	'yaschat.admin.products.history',
 	{
 		authRequired: true,
-		permissionsRequired: ['access-permissions'],
+		permissionsRequired: ['yaschat-product-moderation'],
 		query: productHistoryQuerySchema,
 		rateLimiterOptions: {
 			numRequestsAllowed: 30,
