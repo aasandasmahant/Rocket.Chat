@@ -1,16 +1,17 @@
 {
-    "name": "YasChat",
-    "description": "A global community for conversations and discovery",
-    "launch_path": "/",
-    "icons": {
-        "192": "/images/yaschat/icon.svg",
-        "512": "/images/yaschat/icon.svg"
-    },
-    "developer": {
-        "name": "YasChat"
-    },
-    "fullscreen": "true",
-    "chrome": {
-        "navigation": false
-    }
+  "name": "YasChat",
+  "short_name": "YasChat",
+  "description": "A global community for conversations, product discovery and sharing.",
+  "launch_path": "/",
+  "icons": {
+    "192": "/images/yaschat/icon.svg",
+    "512": "/images/yaschat/icon.svg"
+  },
+  "developer": {
+    "name": "YasChat"
+  },
+  "fullscreen": "true",
+  "chrome": {
+    "navigation": false
+  }
 }
