@@ -4,13 +4,15 @@
 
 - Added a mobile-responsive Admin Product Review page.
 - Added a protected route at `/admin/yaschat/product-review`.
-- Added a YasChat Product Review item to the Admin sidebar, visible to users with `access-permissions`.
-- The page loads the existing pending-review queue endpoint.
+- Added a YasChat Product Review item to the Admin sidebar.
+- The route guard, sidebar visibility, queue API, approve/reject APIs, and history API now consistently use the dedicated `yaschat-product-moderation` permission.
+- The permission is admin-only by default. A trusted moderator must be explicitly granted it through Administration → Permissions.
+- The page loads the pending-review queue endpoint.
 - Each queue item shows the product title, image when available, description, category, price, partner, version, and product destination.
-- Added Approve and Reject actions connected to the Stage 34 endpoints.
+- Added Approve and Reject actions connected to the atomic Stage 34 endpoints.
 - Reject requires a reason in the interface; the server independently validates and enforces this requirement.
 - The page handles loading, empty queue, permission/request errors, stale review conflicts, success messages, and manual refresh.
-- After a successful decision, the item is removed from the current pending queue. If a stale-version conflict occurs, the queue is refreshed.
+- Added on-demand moderation history display through the protected Stage 36 API.
 
 ## Files
 
@@ -18,17 +20,19 @@
 - `apps/meteor/client/views/admin/yaschat/YasChatProductReviewRoute.tsx`
 - `apps/meteor/client/views/admin/routes.tsx`
 - `apps/meteor/client/views/admin/sidebarItems.ts`
+- `apps/meteor/server/api/v1/yaschat-admin-products.ts`
+- `apps/meteor/server/api/v1/yaschat-admin-product-review.ts`
+- `apps/meteor/server/api/v1/yaschat-admin-product-history.ts`
 
 ## Verification status
 
-- All four implementation files were fetched again from the target branch after writing.
-- The route registration and sidebar entry were confirmed in the saved branch.
-- GitHub branch comparison against `develop` reports the YasChat branch ahead with no commits behind at the time of this report.
-- A local TypeScript build, lint, unit/integration tests, and browser interaction tests were not run in this connector session. Therefore this stage is saved and source-verified, but not yet declared build-verified or production-ready.
+- Route registration, sidebar permission, page imports, and protected API registrations were re-fetched from the target branch.
+- GitHub Actions previously exposed lint failures in the Stage 33/34 source and tests. The known lint fixes have now been committed separately.
+- A fresh branch CI run is required to verify the combined current source. A green result is not claimed until that run completes.
+- Browser interaction tests, live API tests, and a full monorepo build remain to be completed.
 
 ## Remaining
 
-- Run repository typecheck, lint, server tests, and browser tests.
-- Add focused tests for the review UI and atomic model transition.
-- Add a review-history detail view and audit export controls.
-- Continue with the community feed and the remaining YasChat modules after regression checks.
+- Add focused automated UI tests for loading, empty queue, approve/reject, stale-version conflict, and history display.
+- Run repository typecheck, lint, unit/API tests, and the full build.
+- Continue with the community/chat integration after the moderation regression gates pass.
