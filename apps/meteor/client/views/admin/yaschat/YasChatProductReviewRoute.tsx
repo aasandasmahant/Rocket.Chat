@@ -4,7 +4,7 @@ import YasChatProductReviewPage from './YasChatProductReviewPage';
 import NotAuthorizedPage from '../../notAuthorized/NotAuthorizedPage';
 
 const YasChatProductReviewRoute = () => {
-	const canReviewProducts = usePermission('access-permissions');
+	const canReviewProducts = usePermission('yaschat-product-moderation');
 
 	if (!canReviewProducts) {
 		return <NotAuthorizedPage />;
