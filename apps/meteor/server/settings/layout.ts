@@ -18,7 +18,7 @@ export const createLayoutSettings = () =>
 				invalidValue: false,
 				modules: ['hide-watermark'],
 			});
-			await this.add('Layout_Login_Hide_Powered_By', false, {
+			await this.add('Layout_Login_Hide_Powered_By', true, {
 				type: 'boolean',
 				public: true,
 				enterprise: true,
@@ -132,13 +132,13 @@ export const createLayoutSettings = () =>
 				multiline: true,
 				public: true,
 			});
-			await this.add('Layout_Sidenav_Footer_Dark', '<a href="/home"><img src="assets/logo_dark.png" alt="Home" /></a>', {
+			await this.add('Layout_Sidenav_Footer_Dark', '<a href="/home"><img src="/images/yaschat/logo-dark.svg" alt="YasChat" /></a>', {
 				type: 'code',
 				code: 'text/html',
 				public: true,
 				i18nDescription: 'Layout_Sidenav_Footer_description',
 			});
-			return this.add('Layout_Sidenav_Footer', '<a href="/home"><img src="assets/logo.png" alt="Home" /></a>', {
+			return this.add('Layout_Sidenav_Footer', '<a href="/home"><img src="/images/yaschat/logo.svg" alt="YasChat" /></a>', {
 				type: 'code',
 				code: 'text/html',
 				public: true,
