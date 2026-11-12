@@ -1,45 +1,47 @@
-# YasChat Branding and Asset Audit
+# YasChat Branding Implementation and Verification
 
-**Date:** 2026-11-09  
+**Date:** 2026-11-12  
 **Branch:** `yaschat/phase-1-foundation`  
-**Scope:** Read-only inspection of brand assets, manifests, logo components and theme CSS.
+**Scope:** Replace user-facing Rocket.Chat logo identity with YasChat's original jumping-fish identity while preserving Rocket.Chat application code and behaviour.
 
-## 1. Confirmed brand asset locations
+## 1. Canonical YasChat identity
 
-- `apps/meteor/public/images/logo/` contains `logo.svg`, `logo_dark.svg`, `icon.svg`, PNG logo, favicon sizes, Android icons, Apple touch icons, Microsoft tiles and Safari pinned-tab icon.
-- `apps/meteor/public/favicon.ico` is a separate favicon entry.
-- `apps/meteor/public/images/manifest.json` currently identifies the product as Rocket.Chat and references PWA icons.
-- `apps/meteor/public/manifest.webapp` contains the current product name, description and developer identity.
-- `packages/logo/` exports `RocketChatLogo` and `TaggedRocketChatLogo` React components. The package README describes them as Rocket.Chat-specific logo components.
+- Primary wordmark: `apps/meteor/public/images/yaschat/logo.svg`
+- Dark-background wordmark: `apps/meteor/public/images/yaschat/logo-dark.svg`
+- App icon: `apps/meteor/public/images/yaschat/icon.svg`
+- Browser favicon: `apps/meteor/public/images/yaschat/favicon.svg`
+- React logo component: `packages/logo/src/YasChatLogo/YasChatLogo.tsx`
 
-## 2. Theme and styling locations
+The mark is an original blue fish leaping above a water splash, with a blue/cyan body and orange accent. The same fish mark is used in the app icon and favicon.
 
-- Global CSS entry: `apps/meteor/client/styles/main.css`.
-- Existing global variables: `apps/meteor/client/styles/imports/general/variables.css`.
-- Theme wrapper: `apps/meteor/client/components/AppLayoutThemeWrapper.tsx`.
-- The theme wrapper applies Fuselage light/dark palette tokens. YasChat styling should use this architecture rather than replacing the design system wholesale.
+## 2. User-facing branding changes applied
 
-The inspected legacy CSS variables include Rocket.Chat red/yellow/green values and layout sizing variables. The application also uses Fuselage tokens, so a brand palette must be mapped carefully to both current and legacy styling.
+- Updated the YasChat React logo component to use the jumping fish and YasChat wordmark.
+- Changed the legacy `RocketChatLogo` compatibility component to render the YasChat logo. Existing imports continue to work, but no longer render the Rocket.Chat wordmark.
+- Updated the logo compatibility tests to expect the accessible YasChat logo.
+- Replaced the YasChat public logo, dark logo and app icon SVG assets.
+- Added the dedicated YasChat SVG favicon.
+- Updated both PWA/web app manifests to use YasChat name, description, theme colours and fish icon.
+- Updated Vite's HTML title, application name, theme colour, favicon and manifest references.
+- Updated the runtime browser favicon and desktop-shell favicon to the YasChat SVG.
+- Changed the default `Site_Name` setting and desktop title fallback to YasChat.
+- Changed the default sidebar footer logo paths to the YasChat light/dark wordmarks.
+- Enabled the default hide-powered-by setting where that branded login setting is supported.
 
-## 3. Safe branding implementation plan — not yet applied
+## 3. Rocket.Chat code preservation
 
-1. Create original YasChat logo assets in SVG and PNG; do not simply recolor or redistribute the Rocket.Chat logo as the new brand.
-2. Prepare light/dark logo variants, app icon, favicon, Android/PWA icons, Apple touch icon and Safari pinned-tab asset.
-3. Update product name, short name, description and icon paths in both manifests only after the new assets and served URLs are verified.
-4. Inspect every logo component usage before replacing or wrapping `@rocket.chat/logo`; keep upstream behavior where needed by integrations.
-5. Define YasChat light/dark tokens through existing Fuselage palette and CSS variable architecture.
-6. Rebrand login, registration, sidebar, top navigation, room header and empty/loading/error states consistently.
-7. Preserve accessible names, contrast, RTL layout and reduced-motion behavior.
+This work changes the rendered brand identity, not the underlying chat platform. It does not remove Rocket.Chat messaging, rooms, channels, authentication, notifications, permissions, or other core application modules. Existing logo component import names are retained as compatibility exports so existing callers do not need to be rewritten immediately.
 
-## 4. Risks and checks still required
+## 4. Remaining compatibility assets and deployment note
 
-- A complete search of user-visible Rocket.Chat product-name references has not yet been completed.
-- Dynamic server branding settings and generated theme CSS still require inspection.
-- Logo package usage across all workspaces needs a complete reference map.
-- PWA icon paths need verification against build output.
-- No visual regression, accessibility or browser tests have been run.
-- No upstream asset has been replaced in this audit.
+- The old `apps/meteor/public/favicon.ico` file was removed so the legacy Rocket.Chat icon is not served from the root favicon path.
+- The old upstream asset directory under `apps/meteor/public/images/logo/` remains in the repository for compatibility with any remaining upstream/static references. The YasChat manifests, runtime favicon, logo component and default sidebar footer now point to YasChat-owned assets. A full rendered-page audit is still required before claiming every historical static reference has been eliminated.
+- On an already-running database, an existing saved `Site_Name` value can override the new default. Set that value to `YasChat` in the server's General settings after deployment if it was previously saved as Rocket.Chat.
+- The Vite HTML title is a development/build entry point; the runtime document title continues to use the configurable `Site_Name` setting.
 
 ## 5. Verification status
 
-This report records source-path and manifest inspection only. No application source, logo, manifest or CSS file was modified. No build, lint, typecheck or test command was executed.
+- All changed text files were fetched again from the target branch after commits and their expected YasChat content was confirmed.
+- The branch comparison against `develop` was checked after the branding commits.
+- The React logo tests were updated but **not executed** in this session.
+- No lint, typecheck, browser visual regression, PWA installation, or full application build was run. No CI success is claimed.
