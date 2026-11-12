@@ -32,6 +32,12 @@ test('requires a reason when transitioning to rejected', () => {
 });
 
 test('requires a non-empty actor and valid timestamp', () => {
-	assert.equal(YasChatProductModerationTransitionSchema.safeParse({ ...base, actorId: ' ', from: 'draft', to: 'pending-review' }).success, false);
-	assert.equal(YasChatProductModerationTransitionSchema.safeParse({ ...base, occurredAt: 'not-a-date', from: 'draft', to: 'pending-review' }).success, false);
+	assert.equal(
+		YasChatProductModerationTransitionSchema.safeParse({ ...base, actorId: ' ', from: 'draft', to: 'pending-review' }).success,
+		false,
+	);
+	assert.equal(
+		YasChatProductModerationTransitionSchema.safeParse({ ...base, occurredAt: 'not-a-date', from: 'draft', to: 'pending-review' }).success,
+		false,
+	);
 });
