@@ -54,7 +54,7 @@ API.v1.post(
 	'yaschat.admin.products.approve',
 	{
 		authRequired: true,
-		permissionsRequired: ['access-permissions'],
+		permissionsRequired: ['yaschat-product-moderation'],
 		body: approveBodySchema,
 		rateLimiterOptions,
 		response: {
@@ -82,7 +82,7 @@ API.v1.post(
 	'yaschat.admin.products.reject',
 	{
 		authRequired: true,
-		permissionsRequired: ['access-permissions'],
+		permissionsRequired: ['yaschat-product-moderation'],
 		body: rejectBodySchema,
 		rateLimiterOptions,
 		response: {
