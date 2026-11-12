@@ -13,6 +13,7 @@ import { useTranslation } from '@rocket.chat/ui-contexts';
 import type { MouseEvent, ReactNode, RefObject } from 'react';
 
 import MessageBoxActionsToolbar from './MessageBoxActionsToolbar';
+import YasChatComposerProductPicker from './YasChatComposerProductPicker';
 import MessageBoxFormattingToolbar from './MessageBoxFormattingToolbar';
 import MessageBoxHint from './MessageBoxHint';
 import MessageBoxReplies from './MessageBoxReplies';
@@ -146,6 +147,7 @@ const MessageBoxBase = ({
 							onClick={onEmojiClick}
 							title={t('Emoji')}
 						/>
+						<YasChatComposerProductPicker composer={composer} disabled={isRecording || !canSend || isEditing} />
 						<MessageComposerActionsDivider />
 						{composer && formatters.length > 0 && (
 							<MessageBoxFormattingToolbar composer={composer} variant={variant} items={formatters} disabled={isRecording || !canSend} />
