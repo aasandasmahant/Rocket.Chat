@@ -24,6 +24,14 @@ type ProductReviewItem = {
 
 type QueueResponse = { success: true; products: ProductReviewItem[] };
 type ReviewResponse = { success: true; reviewed: boolean };
+type ProductAuditEvent = {
+	recordId: string;
+	actorId: string;
+	action: 'created' | 'updated' | 'submitted-for-review' | 'approved' | 'rejected' | 'archived';
+	occurredAt: string;
+	changedFields?: string[];
+	reason?: string;
+};
 
 const styles = css`
 	.yaschat-review { max-width: 1180px; margin: 0 auto; padding: 16px; }
@@ -38,6 +46,10 @@ const styles = css`
 	.yaschat-review-reason { width: 100%; max-width: 520px; min-height: 72px; padding: 10px; border: 1px solid var(--rcx-color-stroke-extra-light, #cfd3dc); border-radius: 8px; font: inherit; }
 	.yaschat-review-state { padding: 18px; border: 1px solid var(--rcx-color-stroke-extra-light, #e5e7eb); border-radius: 10px; line-height: 1.55; }
 	.yaschat-review-error { color: var(--rcx-color-status-font-on-danger, #b42318); }
+	.yaschat-review-history { margin-top: 12px; padding: 12px; border: 1px solid var(--rcx-color-stroke-extra-light, #e5e7eb); border-radius: 8px; }
+	.yaschat-review-history-item { padding: 10px 0; border-bottom: 1px solid var(--rcx-color-stroke-extra-light, #e5e7eb); overflow-wrap: anywhere; }
+	.yaschat-review-history-item:last-child { border-bottom: 0; }
+	.yaschat-review-history-meta { color: var(--rcx-color-foreground-secondary, #687080); font-size: 12px; }
 	@media (max-width: 640px) { .yaschat-review-card { grid-template-columns: 1fr; } .yaschat-review-card img { height: 170px; } }
 `;
 
@@ -48,6 +60,10 @@ const YasChatProductReviewPage = () => {
 	const [busyId, setBusyId] = useState('');
 	const [reasons, setReasons] = useState<Record<string, string>>({});
 	const [notice, setNotice] = useState('');
+	const [historyById, setHistoryById] = useState<Record<string, ProductAuditEvent[]>>({});
+	const [historyLoadingId, setHistoryLoadingId] = useState('');
+	const [historyErrorById, setHistoryErrorById] = useState<Record<string, string>>({});
+	const [expandedHistoryId, setExpandedHistoryId] = useState('');
 
 	const loadQueue = async (signal?: AbortSignal): Promise<void> => {
 		setLoading(true);
@@ -82,6 +98,46 @@ const YasChatProductReviewPage = () => {
 		void loadQueue(controller.signal);
 		return () => controller.abort();
 	}, []);
+
+	const toggleHistory = async (item: ProductReviewItem): Promise<void> => {
+		if (expandedHistoryId === item.recordId) {
+			setExpandedHistoryId('');
+			return;
+		}
+
+		setExpandedHistoryId(item.recordId);
+		if (Object.prototype.hasOwnProperty.call(historyById, item.recordId)) {
+			return;
+		}
+
+		setHistoryLoadingId(item.recordId);
+		setHistoryErrorById((current) => {
+			const nextErrors = { ...current };
+			delete nextErrors[item.recordId];
+			return nextErrors;
+		});
+		try {
+			const response = await fetch(
+				`/api/v1/yaschat.admin.products.history?recordId=${encodeURIComponent(item.recordId)}`,
+				{ credentials: 'same-origin', headers: { Accept: 'application/json' } },
+			);
+			if (!response.ok) {
+				throw new Error(response.status === 403 ? 'You do not have permission to view this history.' : 'The moderation history could not be loaded.');
+			}
+			const payload = (await response.json()) as { success: true; history: ProductAuditEvent[] };
+			if (payload.success !== true || !Array.isArray(payload.history)) {
+				throw new Error('The server returned an invalid moderation history.');
+			}
+			setHistoryById((current) => ({ ...current, [item.recordId]: payload.history }));
+		} catch (cause) {
+			setHistoryErrorById((current) => ({
+				...current,
+				[item.recordId]: cause instanceof Error ? cause.message : 'The moderation history could not be loaded.',
+			}));
+		} finally {
+			setHistoryLoadingId('');
+		}
+	};
 
 	const review = async (item: ProductReviewItem, decision: 'approve' | 'reject'): Promise<void> => {
 		const reason = (reasons[item.recordId] || '').trim();
@@ -171,8 +227,31 @@ const YasChatProductReviewPage = () => {
 												/>
 												<Box className='yaschat-review-actions'>
 													<Button primary onClick={() => void review(item, 'approve')} disabled={Boolean(busyId)} loading={busyId === item.recordId}>Approve</Button>
-													<Button danger onClick={() => void review(item, 'reject')} disabled={Boolean(busyId)} loading={busyId === item.recordId}>Reject</Button>
+							<Button danger onClick={() => void review(item, 'reject')} disabled={Boolean(busyId)} loading={busyId === item.recordId}>Reject</Button>
+												<Button onClick={() => void toggleHistory(item)} disabled={Boolean(busyId) || historyLoadingId === item.recordId}>
+													{historyLoadingId === item.recordId ? 'Loading history…' : expandedHistoryId === item.recordId ? 'Hide history' : 'View history'}
+												</Button>
+											</Box>
+											{expandedHistoryId === item.recordId && (
+												<Box className='yaschat-review-history' role='region' aria-label={`Moderation history for ${item.product.title || item.recordId}`}>
+													<Box is='h4'>Moderation history</Box>
+													{historyErrorById[item.recordId] && <Box className='yaschat-review-error' role='alert'>{historyErrorById[item.recordId]}</Box>}
+													{historyLoadingId === item.recordId ? (
+														<Box role='status'>Loading history…</Box>
+													) : historyById[item.recordId]?.length ? (
+														historyById[item.recordId].map((event, index) => (
+															<Box key={`${event.recordId}-${event.occurredAt}-${index}`} className='yaschat-review-history-item'>
+																<Box><strong>{event.action.replaceAll('-', ' ')}</strong></Box>
+																<Box className='yaschat-review-history-meta'>Admin ID: {event.actorId} · {Number.isNaN(Date.parse(event.occurredAt)) ? event.occurredAt : new Date(event.occurredAt).toLocaleString()}</Box>
+																{event.reason && <Box is='p'>Reason: {event.reason}</Box>}
+																{event.changedFields?.length ? <Box className='yaschat-review-history-meta'>Changed: {event.changedFields.join(', ')}</Box> : null}
+															</Box>
+														))
+													) : !historyErrorById[item.recordId] ? (
+														<Box role='status'>No moderation history is recorded for this product.</Box>
+													) : null}
 												</Box>
+											)}
 											</Box>
 										</Box>
 									))}
