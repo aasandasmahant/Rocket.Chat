@@ -32,7 +32,7 @@ export const {
 		i18nLabel: 'YasChat Product Review',
 		icon: 'shield-check',
 		tag: 'Beta',
-		permissionGranted: (): boolean => hasPermission('access-permissions'),
+		permissionGranted: (): boolean => hasPermission('yaschat-product-moderation'),
 	},
 	{
 		href: '/admin/moderation',
