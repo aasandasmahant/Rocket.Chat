@@ -36,7 +36,7 @@ API.v1.get(
 	'yaschat.admin.products',
 	{
 		authRequired: true,
-		permissionsRequired: ['access-permissions'],
+		permissionsRequired: ['yaschat-product-moderation'],
 		query: adminProductQueueQuerySchema,
 		rateLimiterOptions: {
 			numRequestsAllowed: 60,
