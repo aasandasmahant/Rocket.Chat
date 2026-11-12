@@ -28,6 +28,7 @@ import './v1/presence';
 import './v1/push';
 import './v1/yaschat-admin-products';
 import './v1/yaschat-admin-product-review';
+import './v1/yaschat-admin-product-history';
 import './v1/yaschat-products';
 import './v1/roles';
 import './v1/rooms';
