@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { describe, it } from 'node:test';
 
 const source = readFileSync(join(__dirname, 'yaschat-admin-product-review.ts'), 'utf8');
+const modelSource = readFileSync(join(__dirname, '../../../../../packages/models/src/models/YasChatProducts.ts'), 'utf8');
 
 function routeOptions(routeName: string): string {
 	const routeIndex = source.indexOf(`'${routeName}'`);
@@ -43,5 +44,14 @@ describe('YasChat moderation API authorization', () => {
 		assert.match(rejectSchema, /reason:\s*\{\s*type:\s*'string',\s*minLength:\s*1/);
 		assert.match(rejectSchema, /reason:\s*\{[^}]*pattern:\s*'\\\\S'/);
 		assert.match(rejectSchema, /'recordId',\s*'expectedVersion',\s*'reason'/);
+	});
+
+	describe('YasChat product moderation persistence', () => {
+		it('updates the product timestamp in the same atomic versioned review update', () => {
+			assert.match(modelSource, /recordId,\s*'version': expectedVersion,\s*'moderation.status': 'pending-review'/);
+			assert.match(modelSource, /\$set:\s*\{\s*updatedAt: occurredAt,\s*moderation:/);
+			assert.match(modelSource, /\$inc:\s*\{ version: 1 \}/);
+			assert.match(modelSource, /\$push:\s*\{ moderationHistory: event \}/);
+		});
 	});
 });
