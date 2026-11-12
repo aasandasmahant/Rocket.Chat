@@ -10,7 +10,10 @@ export const YasChatProductPriceSchema = z.object({
 
 export const YasChatProductReviewEvidenceSchema = z.object({
 	source: z.enum(['youtube', 'reddit', 'publisher', 'customer']),
-	url: z.string().url().refine((value) => value.startsWith('https://'), 'Evidence URLs must use HTTPS'),
+	url: z
+		.string()
+		.url()
+		.refine((value) => value.startsWith('https://'), 'Evidence URLs must use HTTPS'),
 	title: z.string().trim().min(1).max(240),
 	publishedAt: z.string().datetime().optional(),
 	collectedAt: z.string().datetime(),
@@ -25,9 +28,20 @@ export const YasChatProductSchema = z.object({
 	externalId: z.string().trim().min(1).max(160),
 	title: z.string().trim().min(1).max(240),
 	description: z.string().trim().max(5000).optional(),
-	productUrl: z.string().url().refine((value) => value.startsWith('https://'), 'Product URLs must use HTTPS'),
-	affiliateUrl: z.string().url().refine((value) => value.startsWith('https://'), 'Affiliate URLs must use HTTPS').optional(),
-	imageUrl: z.string().url().refine((value) => value.startsWith('https://'), 'Image URLs must use HTTPS').optional(),
+	productUrl: z
+		.string()
+		.url()
+		.refine((value) => value.startsWith('https://'), 'Product URLs must use HTTPS'),
+	affiliateUrl: z
+		.string()
+		.url()
+		.refine((value) => value.startsWith('https://'), 'Affiliate URLs must use HTTPS')
+		.optional(),
+	imageUrl: z
+		.string()
+		.url()
+		.refine((value) => value.startsWith('https://'), 'Image URLs must use HTTPS')
+		.optional(),
 	price: YasChatProductPriceSchema.optional(),
 	category: z.string().trim().min(1).max(100).optional(),
 	disclosureRequired: z.literal(true),
