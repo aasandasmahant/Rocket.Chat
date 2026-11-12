@@ -38,7 +38,7 @@ describe('[YasChat product moderation API authorization]', () => {
 
 		it('rejects an authenticated user without the moderation permission', async () => {
 			await request
-				.get(api('yaschat.admin.products.history'))
+				.get('/api/v1/yaschat.admin.products.history')
 				.set(ordinaryUserCredentials)
 				.query({ recordId })
 				.expect(403)
@@ -73,7 +73,7 @@ describe('[YasChat product moderation API authorization]', () => {
 
 			it('rejects an authenticated user without the moderation permission', async () => {
 				await request
-					.post(api(route))
+					.post(`/api/v1/${route}`)
 					.set(ordinaryUserCredentials)
 					.send(body)
 					.expect(403)
