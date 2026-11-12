@@ -1,10 +1,10 @@
+import type { YasChatProductAdminAuditEvent, YasChatProductModerationStatus } from '@rocket.chat/core-typings';
 import type {
 	IYasChatProductsModel,
 	YasChatApprovedProductView,
 	YasChatProductDocument,
 	YasChatProductsSearchOptions,
 } from '@rocket.chat/model-typings';
-import type { YasChatProductAdminAuditEvent, YasChatProductModerationStatus } from '@rocket.chat/core-typings';
 import { escapeRegExp } from '@rocket.chat/tools';
 import type { Db, Filter, FindCursor, IndexDescription } from 'mongodb';
 
@@ -23,7 +23,7 @@ export class YasChatProductsRaw extends BaseRaw<YasChatProductDocument> implemen
 				name: 'yaschat_product_source_external_id_unique',
 			},
 			{
-				key: { 'moderation.status': 1, updatedAt: -1 },
+				key: { 'moderation.status': 1, 'updatedAt': -1 },
 				name: 'yaschat_product_moderation_updated',
 			},
 			{
@@ -83,12 +83,17 @@ export class YasChatProductsRaw extends BaseRaw<YasChatProductDocument> implemen
 			actorId,
 			action: decision,
 			occurredAt,
-			changedFields: ['moderation.status', 'moderation.reviewedBy', 'moderation.reviewedAt', ...(decision === 'rejected' ? ['moderation.rejectionReason'] : [])],
+			changedFields: [
+				'moderation.status',
+				'moderation.reviewedBy',
+				'moderation.reviewedAt',
+				...(decision === 'rejected' ? ['moderation.rejectionReason'] : []),
+			],
 			...(decision === 'rejected' && reason ? { reason } : {}),
 		};
 
 		const result = await this.updateOne(
-			{ recordId, version: expectedVersion, 'moderation.status': 'pending-review' },
+			{ recordId, 'version': expectedVersion, 'moderation.status': 'pending-review' },
 			{
 				$set: {
 					moderation: {
