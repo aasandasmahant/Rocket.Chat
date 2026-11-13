@@ -142,12 +142,12 @@ Do not introduce a second database or a new backend framework unless a concrete 
 
 ## Current next engineering stage
 
-**Stage 62 — Verify the fresh CI run after the ui-livekit lint correction.**
+**Stage 63 — Verify the fresh CI run after the model-typings import-format fix.**
 
-Stage 61 inspected engineering gate run #101 and recovered the exact failure: three Oxlint `no-floating-promises` errors in `packages/ui-livekit/src/LiveKitCallProvider.tsx` at lines 235, 238 and 241. The three UI device-control promise chains already had explicit error handlers; the verified minimal correction added `void` to each intentionally fire-and-forget chain. Commit: `f3d92b889d4a6373597858b0f1d8a0d45f549a01`. Stage 61 report: `docs/YASCHAT_STAGE-61_REPORT.md`.
+Stage 62 inspected Engineering Gate run #104. Toolchain, immutable dependency installation, documentation links and the focused YasChat moderation permission regression test passed. Lint then failed only in `@rocket.chat/model-typings#lint`, with an exact formatting diagnostic at `packages/model-typings/src/models/IYasChatProductsModel.ts:1:14`. The type-only import was reformatted to the exact single-line style required by Oxlint, without changing types or behavior. Commit: `73239854731c7dcf2ee84fb8ec6eb527b7c7b2a1`. Stage report: `docs/YASCHAT_STAGE-62_REPORT.md`.
 
-The new push-triggered workflow run after this correction must be inspected before marking lint green. If lint passes, confirm unit tests and then separately dispatch the full monorepo build with `run_full_build=true`. If another gate fails, recover its exact job log and fix only the demonstrated issue. Do not infer success from a commit being accepted.
+Inspect the new push-triggered gate for that fix. If lint passes, verify unit tests. The full monorepo build remains a separate manual workflow run using `run_full_build=true`; do not claim a full build based on the push gate. For any further failure, retrieve the exact job log and make only a verified, minimal correction.
 
 The native composer picker remains a text-insertion bridge only. A typed product message attachment still requires a coordinated server-side validation/persistence contract, renderer, permissions/E2EE/federation review and tests.
 
-Do not merge this branch into `develop` until the required tests, build, license checks and human review pass.
+Do not merge this branch into `develop` until required tests, full build, license checks and human review pass.
