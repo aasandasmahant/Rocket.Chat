@@ -232,13 +232,13 @@ export const LiveKitCallProvider = ({ callId, connect, preferences, onEnded, rnn
 		(): CallActions => ({
 			// Remembered only once the device switched, so a refused prompt is not stored as the next call's choice.
 			toggleMic: () => {
-				localParticipant.setMicrophoneEnabled(!micEnabled).then(() => persistDevicePreference({ mic: !micEnabled }), onToggleError);
+				void localParticipant.setMicrophoneEnabled(!micEnabled).then(() => persistDevicePreference({ mic: !micEnabled }), onToggleError);
 			},
 			toggleCamera: () => {
-				localParticipant.setCameraEnabled(!camEnabled).then(() => persistDevicePreference({ cam: !camEnabled }), onToggleError);
+				void localParticipant.setCameraEnabled(!camEnabled).then(() => persistDevicePreference({ cam: !camEnabled }), onToggleError);
 			},
 			toggleScreenShare: () => {
-				localParticipant.setScreenShareEnabled(!screenEnabled).catch(onToggleError);
+				void localParticipant.setScreenShareEnabled(!screenEnabled).catch(onToggleError);
 			},
 			toggleHand,
 			sendReaction,
