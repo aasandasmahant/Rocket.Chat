@@ -142,7 +142,17 @@ Do not introduce a second database or a new backend framework unless a concrete 
 
 ## Current next engineering stage
 
-**Stage 64 — Verify the new CI run after the ui-contexts lint fix.**
+**Stage 67 — Implement and test YasChat's recipient-language translation experience.**
+
+Stage 66 completed a source audit of the existing Community Edition translation flow and documented the product contract. Existing code already stores a per-user, per-room `autoTranslate` flag and `autoTranslateLanguage` on subscriptions; the server gathers the target languages subscribed to in a room, translates the message for those target languages, stores translations separately from the original message, and notifies clients. The client decides whether to display a translation using the current user's subscription language. The interface language is a separate setting and must not be confused with the message-translation target language. The provider registry currently selects one configured active provider; supported language availability must be queried from that provider rather than assuming all providers or all 200+ countries/languages are covered.
+
+Stage 66 also corrected a trailing comma in `packages/i18n/src/locales/hi.i18n.json` that caused JSON parsing to fail. Commit: `b14921ef6e72e976168020984ee20b620c296d3c`. The engineering gate for this commit is running; inspect its result before claiming lint or tests pass. Stage 66 audit report: `docs/YASCHAT_STAGE-66_REPORT.md`.
+
+Stage 67 must build on the existing subscription-based translation architecture, not create a parallel translation service. Define and test the user flow for selecting a preferred message language, enabling/disabling automatic translation per conversation, seeing the original message, manually translating a message, and graceful fallback when a provider does not support a language or fails. Add explicit privacy/cost safeguards and provider capability reporting. Verify recipient-specific behavior in a two-user test (Hindi recipient sees Hindi; English recipient sees English) while preserving the original. The 200+ country and language goal is a coverage target, not a promise: publish only languages returned by the active provider and tested end-to-end. Do not translate E2E-encrypted rooms or silently bypass their protection.
+
+Before implementation, inspect the latest CI gate and fix only exact failures. Unit tests and the full monorepo build must be separately verified; the full build is conditional on manual workflow dispatch with `run_full_build=true`.
+
+**Historical Stage 64–65 notes:** Stage 63's earlier `ui-contexts` lint suppression cleanup and Stage 64–65 locale investigations are recorded in their stage reports and commit history. The latest source-of-truth is the current branch and latest workflow run, not the old historical run IDs.
 
 Stage 63 inspected Engineering Gate run #107 (run ID `43347603623`) on commit `3cc6c10c0f98431c5d958f17ca46ca74d5f7524c`. Toolchain, immutable dependency installation, documentation links and the focused YasChat moderation permission regression test passed. Lint failed in `@rocket.chat/ui-contexts#lint` because `packages/ui-contexts/src/ActionManagerContext.ts:26:2` contained an unused `oxlint-disable-next-line @typescript-eslint/no-duplicate-type-constituents` directive. The directive alone was removed; no interface or runtime behavior changed. Commit: `bc50b1532ea42973e34f0cb93bef855257edf99f`. Stage report: `docs/YASCHAT_STAGE-63_REPORT.md`.
 
