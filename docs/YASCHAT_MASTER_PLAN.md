@@ -142,9 +142,9 @@ Do not introduce a second database or a new backend framework unless a concrete 
 
 ## Current next engineering stage
 
-**Stage 63 — Verify the fresh CI run after the model-typings import-format fix.**
+**Stage 64 — Verify the new CI run after the ui-contexts lint fix.**
 
-Stage 62 inspected Engineering Gate run #104. Toolchain, immutable dependency installation, documentation links and the focused YasChat moderation permission regression test passed. Lint then failed only in `@rocket.chat/model-typings#lint`, with an exact formatting diagnostic at `packages/model-typings/src/models/IYasChatProductsModel.ts:1:14`. The type-only import was reformatted to the exact single-line style required by Oxlint, without changing types or behavior. Commit: `73239854731c7dcf2ee84fb8ec6eb527b7c7b2a1`. Stage report: `docs/YASCHAT_STAGE-62_REPORT.md`.
+Stage 63 inspected Engineering Gate run #107 (run ID `43347603623`) on commit `3cc6c10c0f98431c5d958f17ca46ca74d5f7524c`. Toolchain, immutable dependency installation, documentation links and the focused YasChat moderation permission regression test passed. Lint failed in `@rocket.chat/ui-contexts#lint` because `packages/ui-contexts/src/ActionManagerContext.ts:26:2` contained an unused `oxlint-disable-next-line @typescript-eslint/no-duplicate-type-constituents` directive. The directive alone was removed; no interface or runtime behavior changed. Commit: `bc50b1532ea42973e34f0cb93bef855257edf99f`. Stage report: `docs/YASCHAT_STAGE-63_REPORT.md`.
 
 Inspect the new push-triggered gate for that fix. If lint passes, verify unit tests. The full monorepo build remains a separate manual workflow run using `run_full_build=true`; do not claim a full build based on the push gate. For any further failure, retrieve the exact job log and make only a verified, minimal correction.
 
