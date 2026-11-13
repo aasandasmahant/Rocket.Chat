@@ -142,9 +142,11 @@ Do not introduce a second database or a new backend framework unless a concrete 
 
 ## Current next engineering stage
 
-**Stage 61 — Recover the exact ui-contexts lint diagnostic and rerun the engineering gate.**
+**Stage 62 — Verify the fresh CI run after the ui-livekit lint correction.**
 
-Stage 60 rechecked the latest CI state and compared the native composer product picker with the public approved-catalogue route and canonical product schema. The catalogue response shape and fields inspected are aligned. Engineering Gate run #99 failed at `@rocket.chat/ui-contexts#lint`; the captured log excerpt does not expose the precise lint diagnostic, so no speculative source edits were made. Recover the command's exact output, fix only the verified issue, and obtain a fresh passing gate before claiming CI is green.
+Stage 61 inspected engineering gate run #101 and recovered the exact failure: three Oxlint `no-floating-promises` errors in `packages/ui-livekit/src/LiveKitCallProvider.tsx` at lines 235, 238 and 241. The three UI device-control promise chains already had explicit error handlers; the verified minimal correction added `void` to each intentionally fire-and-forget chain. Commit: `f3d92b889d4a6373597858b0f1d8a0d45f549a01`. Stage 61 report: `docs/YASCHAT_STAGE-61_REPORT.md`.
+
+The new push-triggered workflow run after this correction must be inspected before marking lint green. If lint passes, confirm unit tests and then separately dispatch the full monorepo build with `run_full_build=true`. If another gate fails, recover its exact job log and fix only the demonstrated issue. Do not infer success from a commit being accepted.
 
 The native composer picker remains a text-insertion bridge only. A typed product message attachment still requires a coordinated server-side validation/persistence contract, renderer, permissions/E2EE/federation review and tests.
 
